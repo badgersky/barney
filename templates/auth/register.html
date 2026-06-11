@@ -1,0 +1,25 @@
+<h2>Create account</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div>
+        <label>Username</label><br>
+        {{ form.username }}
+        {{ form.username.errors }}
+    </div>
+
+    <div>
+        <label>Password</label><br>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+    </div>
+
+    <div>
+        <label>Repeat password</label><br>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+    </div>
+
+    <button type="submit">Register</button>
+</form>
