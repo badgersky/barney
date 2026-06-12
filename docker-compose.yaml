@@ -1,11 +1,15 @@
 services:
   db:
     image: postgres:16
+    restart: always
+
+    env_file:
+      - .env
 
     environment:
-      POSTGRES_DB: barney
-      POSTGRES_USER: barney
-      POSTGRES_PASSWORD: barney
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     ports:
       - "5432:5432"
@@ -15,12 +19,16 @@ services:
 
   web:
     build: .
-    ports:
-      - "8000:8000"
+
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+    ports:
+      - "8000:8000"
+
     env_file:
       - .env
+
     depends_on:
       - db
 

@@ -1,0 +1,17 @@
+<h1>Animals</h1>
+
+<a href="{% url 'animal-create' %}">
+    Add animal
+</a>
+
+<ul>
+    {% for animal in animals %}
+        <li>
+            <a href="{% url 'animal-detail' animal.pk %}">
+                {{ animal.name }}
+            </a>
+        </li>
+    {% empty %}
+        <li>No animals found.</li>
+    {% endfor %}
+</ul>
