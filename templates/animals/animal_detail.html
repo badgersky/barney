@@ -1,0 +1,21 @@
+<h1>{{ animal.name }}</h1>
+
+<p>Species: {{ animal.species }}</p>
+
+<p>Building: {{ animal.building }}</p>
+
+<p>Birth date: {{ animal.birth_date }}</p>
+
+<p>Created at: {{ animal.created_at }}</p>
+
+<a href="{% url 'animal-update' animal.pk %}">
+    Edit
+</a>
+
+<a href="{% url 'animal-delete' animal.pk %}">
+    Delete
+</a>
+
+<a href="{% url 'animal-list' %}">
+    Back
+</a>
