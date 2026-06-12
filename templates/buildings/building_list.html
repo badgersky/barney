@@ -1,0 +1,15 @@
+<h1>Buildings</h1>
+
+<a href="{% url 'building-create' %}">Add building</a>
+
+<ul>
+    {% for building in buildings %}
+        <li>
+            <a href="{% url 'building-detail' building.pk %}">
+                {{ building.name }}
+            </a>
+        </li>
+    {% empty %}
+        <li>No buildings found.</li>
+    {% endfor %}
+</ul>

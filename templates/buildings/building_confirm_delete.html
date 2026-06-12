@@ -1,0 +1,18 @@
+<h1>Delete building</h1>
+
+<p>
+    Are you sure you want to delete
+    "{{ object.name }}"?
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit">
+        Delete
+    </button>
+</form>
+
+<a href="{% url 'building-detail' object.pk %}">
+    Cancel
+</a>
