@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from animals.models import Animal
 
 
 class Task(models.Model):
@@ -39,6 +40,13 @@ class Task(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True
+    )
+
+    animal = models.ForeignKey(
+        Animal,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     def __str__(self):
