@@ -9,6 +9,7 @@ from django.views.generic import (
 
 from .models import Building
 from .forms import BuildingForm
+from users.mixins import AdminOrManagerRequiredMixin
 
 
 class BuildingListView(ListView):
@@ -20,7 +21,7 @@ class BuildingDetailView(DetailView):
     model = Building
 
 
-class BuildingCreateView(CreateView):
+class BuildingCreateView(AdminOrManagerRequiredMixin, CreateView):
     model = Building
     form_class = BuildingForm
     success_url = reverse_lazy("building-list")
@@ -30,12 +31,12 @@ class BuildingCreateView(CreateView):
         return super().form_valid(form)
 
 
-class BuildingUpdateView(UpdateView):
+class BuildingUpdateView(AdminOrManagerRequiredMixin, UpdateView):
     model = Building
     form_class = BuildingForm
     success_url = reverse_lazy("building-list")
 
 
-class BuildingDeleteView(DeleteView):
+class BuildingDeleteView(AdminOrManagerRequiredMixin, DeleteView):
     model = Building
     success_url = reverse_lazy("building-list")
