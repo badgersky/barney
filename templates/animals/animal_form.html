@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>Animal</h1>
 
 <form method="post">
@@ -13,3 +17,5 @@
 <a href="{% url 'animal-list' %}">
     Cancel
 </a>
+
+{% endblock %}

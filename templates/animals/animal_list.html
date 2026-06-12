@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>Animals</h1>
 
 <a href="{% url 'animal-create' %}">
@@ -15,3 +19,5 @@
         <li>No animals found.</li>
     {% endfor %}
 </ul>
+
+{% endblock %}

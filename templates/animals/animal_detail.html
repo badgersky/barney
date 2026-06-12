@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>{{ animal.name }}</h1>
 
 <p>Species: {{ animal.species }}</p>
@@ -19,3 +23,5 @@
 <a href="{% url 'animal-list' %}">
     Back
 </a>
+
+{% endblock %}

@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>{{ building.name }}</h1>
 
 <p>{{ building.description }}</p>
@@ -16,3 +20,5 @@
 <a href="{% url 'building-list' %}">
     Back
 </a>
+
+{% endblock %}

@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>Buildings</h1>
 
 <a href="{% url 'building-create' %}">Add building</a>
@@ -13,3 +17,5 @@
         <li>No buildings found.</li>
     {% endfor %}
 </ul>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+<nav>
+
+    <a href="/">Home</a>
+
+    <a href="{% url 'building-list' %}">
+        Buildings
+    </a>
+
+    <a href="{% url 'animal-list' %}">
+        Animals
+    </a>
+
+    <a href="#">
+        Tasks
+    </a>
+
+    {% if user.is_authenticated %}
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">
+                Logout
+            </button>
+        </form>
+
+    {% else %}
+
+        <a href="{% url 'login' %}">
+            Login
+        </a>
+
+        <a href="{% url 'register' %}">
+            Register
+        </a>
+
+    {% endif %}
+
+</nav>
