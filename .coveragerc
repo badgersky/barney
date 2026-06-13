@@ -9,3 +9,4 @@ omit =
     config/asgi.py
     config/wsgi.py
     config/settings*.py
+    */management/commands/*
