@@ -13,6 +13,11 @@ from buildings.models import Building, BuildingNote
 from animals.models import Animal, Species
 
 
+def goat():
+    species, _ = Species.objects.get_or_create(name="Koza")
+    return species
+
+
 class BuildingModelUnitTest(TestCase):
     """JEDNOSTKOWE."""
 
@@ -37,7 +42,7 @@ class BuildingModuleTest(TestCase):
 
     def test_delete_location_does_not_delete_animals(self):
         b = Building.objects.create(name="Stajnia", type=Building.Type.STABLE)
-        sp = Species.objects.get(name="Koza")
+        sp = goat()
         a = Animal.objects.create(identifier="B1", species=sp, building=b)
         b.delete()
         a.refresh_from_db()

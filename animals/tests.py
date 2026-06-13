@@ -19,7 +19,8 @@ from animals.forms import AnimalForm
 
 
 def goat():
-    return Species.objects.get(name="Koza")
+    species, _ = Species.objects.get_or_create(name="Koza")
+    return species
 
 
 class AnimalModelUnitTest(TestCase):

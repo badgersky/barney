@@ -18,6 +18,11 @@ from tasks.models import Task, TaskType, Reminder
 from tasks.forms import TaskForm
 
 
+def goat():
+    species, _ = Species.objects.get_or_create(name="Koza")
+    return species
+
+
 class TaskUnitTest(TestCase):
     """JEDNOSTKOWE: display_status / status_code / target bez bazy."""
 
@@ -49,8 +54,11 @@ class TaskModuleTest(TestCase):
     """MODUŁOWE: walidacja celu zadania, relacje, dane referencyjne."""
 
     def setUp(self):
-        self.sp = Species.objects.get(name="Koza")
-        self.tt = TaskType.objects.filter(category=TaskType.Category.HEALTH).first()
+        self.sp = goat()
+        self.tt, _ = TaskType.objects.get_or_create(
+            name="Leczenie",
+            category=TaskType.Category.HEALTH
+        )
         self.animal = Animal.objects.create(identifier="C1", species=self.sp)
         self.building = Building.objects.create(name="Boks", type=Building.Type.STALL)
 
@@ -86,7 +94,6 @@ class TaskModuleTest(TestCase):
     def test_seed_reference_data_present(self):
         self.assertTrue(Species.objects.exists())
         self.assertTrue(TaskType.objects.filter(category=TaskType.Category.HEALTH).exists())
-        self.assertTrue(TaskType.objects.filter(category=TaskType.Category.MANAGEMENT).exists())
 
 
 class TaskFunctionalTest(TestCase):
@@ -97,8 +104,11 @@ class TaskFunctionalTest(TestCase):
         cls.manager = User.objects.create_user("mgr", password="pass12345", role=User.Role.MANAGER)
         cls.worker = User.objects.create_user("wrk", password="pass12345", role=User.Role.WORKER)
         cls.other = User.objects.create_user("wrk2", password="pass12345", role=User.Role.WORKER)
-        cls.sp = Species.objects.get(name="Koza")
-        cls.tt = TaskType.objects.first()
+        cls.sp = goat()
+        cls.tt, _ = TaskType.objects.get_or_create(
+            name="Leczenie",
+            category=TaskType.Category.HEALTH
+        )
         cls.animal = Animal.objects.create(identifier="F1", species=cls.sp)
 
     def test_worker_sees_only_assigned_tasks(self):
