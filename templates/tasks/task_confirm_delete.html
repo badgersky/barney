@@ -1,26 +1,16 @@
 {% extends "base.html" %}
+{% block title %}Usuń zadanie — Barney{% endblock %}
 
 {% block content %}
-
-<h1>Delete task</h1>
-
-<p>
-    Are you sure you want to delete
-    "{{ object.title }}"?
-</p>
-
-<form method="post">
-
+<div class="page-head"><h1>Usuń zadanie</h1></div>
+<div class="card card--accent">
+  <p>Czy na pewno chcesz usunąć zadanie „<strong>{{ object.title }}</strong>"? Tej operacji nie można cofnąć.</p>
+  <form method="post">
     {% csrf_token %}
-
-    <button type="submit">
-        Delete
-    </button>
-
-</form>
-
-<a href="{% url 'task-list' %}">
-    Cancel
-</a>
-
+    <div class="form-actions">
+      <button type="submit" class="btn btn--danger">Tak, usuń</button>
+      <a href="{% url 'task-detail' object.pk %}" class="btn btn--ghost">Anuluj</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

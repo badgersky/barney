@@ -1,15 +1,31 @@
 {% extends "base.html" %}
+{% block title %}Logowanie — Barney{% endblock %}
 
 {% block content %}
+<div class="auth-wrap">
+  <div class="card card--accent">
+    <h2>Zaloguj się</h2>
+    <p style="color:var(--muted);margin-top:-.3rem">Wpisz dane, aby wejść do systemu.</p>
 
-<h2>Login</h2>
+    {% if form.errors %}
+      <div class="alert alert--error">Nieprawidłowa nazwa użytkownika lub hasło.</div>
+    {% endif %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.username.label }} {{ form.username }}<br>
-  {{ form.password.label }} {{ form.password }}<br>
-
-  <button type="submit">Login</button>
-</form>
-
+    <form method="post">
+      {% csrf_token %}
+      <p>
+        <label for="{{ form.username.id_for_label }}">Nazwa użytkownika</label>
+        {{ form.username }}
+      </p>
+      <p>
+        <label for="{{ form.password.id_for_label }}">Hasło</label>
+        {{ form.password }}
+      </p>
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Zaloguj</button>
+      </div>
+    </form>
+  </div>
+  <p class="auth-foot">Nie masz konta? <a href="{% url 'register' %}">Załóż konto</a></p>
+</div>
 {% endblock %}

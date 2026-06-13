@@ -1,27 +1,18 @@
 {% extends "base.html" %}
+{% block title %}Zmiana statusu — Barney{% endblock %}
 
 {% block content %}
+<div class="page-head"><h1>Zmień status zadania</h1></div>
 
-<h1>Update task status</h1>
-
-<p>
-    Task: {{ object.title }}
-</p>
-
-<form method="post">
-
+<div class="card card--accent">
+  <p style="color:var(--muted)">Zadanie: <strong>{{ object.title }}</strong></p>
+  <form method="post">
     {% csrf_token %}
-
     {{ form.as_p }}
-
-    <button type="submit">
-        Update
-    </button>
-
-</form>
-
-<a href="{% url 'task-list' %}">
-    Cancel
-</a>
-
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary">Zapisz</button>
+      <a href="{% url 'task-detail' object.pk %}" class="btn btn--ghost">Anuluj</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

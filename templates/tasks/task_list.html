@@ -1,27 +1,32 @@
 {% extends "base.html" %}
+{% block title %}Zadania — Barney{% endblock %}
 
 {% block content %}
+<div class="page-head">
+  <h1>Zadania</h1>
+  {% if user.is_admin or user.is_manager %}
+    <a href="{% url 'task-create' %}" class="btn btn--primary">+ Dodaj zadanie</a>
+  {% endif %}
+</div>
 
-<h1>Tasks</h1>
-
-<a href="{% url 'task-create' %}">
-    Add task
-</a>
-
-<ul>
-    {% for task in tasks %}
-
-        <li>
-            <a href="{% url 'task-update' task.pk %}">
-                {{ task.title }}
-            </a>
-        </li>
-
-    {% empty %}
-
-        <li>No tasks found.</li>
-
-    {% endfor %}
+<ul class="itemlist">
+  {% for task in tasks %}
+    <li class="item">
+      <div class="item__main">
+        <a class="item__title" href="{% url 'task-detail' task.pk %}">{{ task.title }}</a>
+        <span class="item__meta">
+          {% if task.target %}{{ task.target }} · {% endif %}
+          {% if task.due_date %}termin: {{ task.due_date }}{% else %}bez terminu{% endif %}
+          {% if task.assigned_to %} · {{ task.assigned_to.username }}{% endif %}
+        </span>
+      </div>
+      <div class="item__actions">
+        <span class="pill pill--{{ task.status_code }}">{{ task.display_status }}</span>
+        <a href="{% url 'task-detail' task.pk %}" class="btn btn--ghost btn--sm">Podgląd</a>
+      </div>
+    </li>
+  {% empty %}
+    <li class="empty">Brak zadań. {% if user.is_admin or user.is_manager %}Dodaj pierwsze zadanie, aby zacząć.{% endif %}</li>
+  {% endfor %}
 </ul>
-
 {% endblock %}

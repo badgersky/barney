@@ -1,23 +1,35 @@
 {% extends "base.html" %}
+{% block title %}Zwierzęta — Barney{% endblock %}
 
 {% block content %}
+<div class="page-head">
+  <h1>Zwierzęta</h1>
+  {% if user.is_admin or user.is_manager %}
+    <a href="{% url 'animal-create' %}" class="btn btn--primary">+ Dodaj zwierzę</a>
+  {% endif %}
+</div>
 
-<h1>Animals</h1>
-
-<a href="{% url 'animal-create' %}">
-    Add animal
-</a>
-
-<ul>
-    {% for animal in animals %}
-        <li>
-            <a href="{% url 'animal-detail' animal.pk %}">
-                {{ animal.name }}
-            </a>
-        </li>
-    {% empty %}
-        <li>No animals found.</li>
-    {% endfor %}
+<ul class="itemlist">
+  {% for animal in animals %}
+    <li class="item">
+      <div class="item__main">
+        <a class="item__title" href="{% url 'animal-detail' animal.pk %}">
+          {{ animal.name|default:animal.identifier }}
+        </a>
+        <span class="item__meta">
+          {{ animal.species }} · {{ animal.get_sex_display }}
+          {% if animal.building %} · {{ animal.building }}{% endif %}
+        </span>
+      </div>
+      <div class="item__actions">
+        <span class="pill pill--{% if animal.health_status == 'HEALTHY' %}done{% else %}health{% endif %}">
+          {{ animal.get_health_status_display }}
+        </span>
+        <a href="{% url 'animal-detail' animal.pk %}" class="btn btn--ghost btn--sm">Podgląd</a>
+      </div>
+    </li>
+  {% empty %}
+    <li class="empty">Brak zwierząt w ewidencji.</li>
+  {% endfor %}
 </ul>
-
 {% endblock %}

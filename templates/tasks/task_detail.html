@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{{ task.title }} — Barney{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1>{{ task.title }}</h1>
+  <span class="pill pill--{{ task.status_code }}">{{ task.display_status }}</span>
+</div>
+
+<div class="card card--accent">
+  <dl class="dl">
+    <dt>Typ</dt>
+    <dd>{% if task.task_type %}<span class="pill pill--type">{{ task.task_type }}</span>{% else %}—{% endif %}</dd>
+
+    <dt>Dotyczy</dt>
+    <dd>
+      {% if task.animal %}Zwierzę: <a href="{% url 'animal-detail' task.animal.pk %}">{{ task.animal }}</a>
+      {% elif task.building %}Lokalizacja: <a href="{% url 'building-detail' task.building.pk %}">{{ task.building }}</a>
+      {% else %}—{% endif %}
+    </dd>
+
+    <dt>Termin</dt>
+    <dd>{{ task.due_date|default:"—" }}</dd>
+
+    <dt>Przypisane do</dt>
+    <dd>{{ task.assigned_to.username|default:"—" }}</dd>
+
+    <dt>Opis</dt>
+    <dd>{{ task.description|default:"—"|linebreaksbr }}</dd>
+
+    <dt>Utworzone przez</dt>
+    <dd>{{ task.created_by.username|default:"—" }} · {{ task.created_at|date:"d.m.Y H:i" }}</dd>
+  </dl>
+
+  <div class="form-actions">
+    <a href="{% url 'task-status' task.pk %}" class="btn btn--ghost btn--sm">Zmień status</a>
+    {% if user.is_admin or user.is_manager %}
+      <a href="{% url 'task-update' task.pk %}" class="btn btn--ghost btn--sm">Edytuj</a>
+      <a href="{% url 'task-delete' task.pk %}" class="btn btn--danger btn--sm">Usuń</a>
+    {% endif %}
+    <a href="{% url 'task-list' %}" class="btn btn--ghost btn--sm">← Wróć do listy</a>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Przypomnienia</h2>
+  <ul class="itemlist">
+    {% for r in task.reminders.all %}
+      <li class="item">
+        <div class="item__main">
+          <span class="item__title">{{ r.message }}</span>
+          <span class="item__meta">{{ r.date }}</span>
+        </div>
+        <span class="pill pill--planned">{{ r.get_status_display }}</span>
+      </li>
+    {% empty %}
+      <li class="empty">Brak przypomnień dla tego zadania.</li>
+    {% endfor %}
+  </ul>
+
+  {% if user.is_admin or user.is_manager %}
+  <form method="post" action="{% url 'reminder-create' task.pk %}" class="inline-form" style="margin-top:1rem">
+    {% csrf_token %}
+    {{ reminder_form.as_p }}
+    <button type="submit" class="btn btn--primary btn--sm">Dodaj przypomnienie</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

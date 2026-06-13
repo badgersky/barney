@@ -1,24 +1,31 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView
+    DeleteView,
 )
 
-from .models import Building
-from .forms import BuildingForm
+from .models import Building, BuildingNote
+from .forms import BuildingForm, BuildingNoteForm
 from users.mixins import AdminOrManagerRequiredMixin
 
 
-class BuildingListView(ListView):
+class BuildingListView(LoginRequiredMixin, ListView):
     model = Building
     context_object_name = "buildings"
 
 
-class BuildingDetailView(DetailView):
+class BuildingDetailView(LoginRequiredMixin, DetailView):
     model = Building
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["note_form"] = BuildingNoteForm()
+        return context
 
 
 class BuildingCreateView(AdminOrManagerRequiredMixin, CreateView):
@@ -40,3 +47,18 @@ class BuildingUpdateView(AdminOrManagerRequiredMixin, UpdateView):
 class BuildingDeleteView(AdminOrManagerRequiredMixin, DeleteView):
     model = Building
     success_url = reverse_lazy("building-list")
+
+
+class BuildingNoteCreateView(AdminOrManagerRequiredMixin, CreateView):
+    model = BuildingNote
+    form_class = BuildingNoteForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.building = get_object_or_404(Building, pk=kwargs["building_pk"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.building = self.building
+        form.instance.author = self.request.user
+        form.save()
+        return redirect("building-detail", pk=self.building.pk)

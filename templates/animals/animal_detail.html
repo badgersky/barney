@@ -1,27 +1,74 @@
 {% extends "base.html" %}
+{% block title %}{{ animal.name|default:animal.identifier }} — Barney{% endblock %}
 
 {% block content %}
+<div class="page-head"><h1>{{ animal.name|default:animal.identifier }}</h1></div>
 
-<h1>{{ animal.name }}</h1>
+<div class="card card--accent">
+  <dl class="dl">
+    <dt>Identyfikator</dt><dd>{{ animal.identifier }}</dd>
+    <dt>Gatunek</dt><dd>{{ animal.species }}</dd>
+    <dt>Płeć</dt><dd>{{ animal.get_sex_display }}</dd>
+    <dt>Lokalizacja</dt><dd>{{ animal.building|default:"—" }}</dd>
+    <dt>Stan zdrowia</dt>
+    <dd><span class="pill pill--{% if animal.health_status == 'HEALTHY' %}done{% else %}health{% endif %}">{{ animal.get_health_status_display }}</span></dd>
+    <dt>Data urodzenia</dt><dd>{{ animal.birth_date|default:"—" }}</dd>
+    <dt>Dodano</dt><dd>{{ animal.created_at|date:"d.m.Y H:i" }}</dd>
+  </dl>
 
-<p>Species: {{ animal.species }}</p>
+  <div class="form-actions">
+    {% if user.is_admin or user.is_manager %}
+      <a href="{% url 'animal-update' animal.pk %}" class="btn btn--ghost btn--sm">Edytuj</a>
+      <a href="{% url 'animal-delete' animal.pk %}" class="btn btn--danger btn--sm">Usuń</a>
+    {% endif %}
+    <a href="{% url 'animal-list' %}" class="btn btn--ghost btn--sm">← Wróć do listy</a>
+  </div>
+</div>
 
-<p>Building: {{ animal.building }}</p>
+<div class="card">
+  <h2>Historia notatek</h2>
+  <ul class="itemlist">
+    {% for note in animal.note_history.all %}
+      <li class="item">
+        <div class="item__main">
+          <span class="item__title" style="font-weight:500">{{ note.content|linebreaksbr }}</span>
+          <span class="item__meta">
+            {{ note.created_at|date:"d.m.Y H:i" }}{% if note.author %} · {{ note.author.username }}{% endif %}
+            {% if forloop.first %} · <strong>aktualna</strong>{% endif %}
+          </span>
+        </div>
+      </li>
+    {% empty %}
+      <li class="empty">Brak notatek. Dodaj pierwszą poniżej.</li>
+    {% endfor %}
+  </ul>
 
-<p>Birth date: {{ animal.birth_date }}</p>
+  {% if user.is_admin or user.is_manager %}
+  <form method="post" action="{% url 'animal-note-create' animal.pk %}" style="margin-top:1rem">
+    {% csrf_token %}
+    {{ note_form.as_p }}
+    <button type="submit" class="btn btn--primary btn--sm">Dodaj notatkę</button>
+  </form>
+  {% endif %}
+</div>
 
-<p>Created at: {{ animal.created_at }}</p>
-
-<a href="{% url 'animal-update' animal.pk %}">
-    Edit
-</a>
-
-<a href="{% url 'animal-delete' animal.pk %}">
-    Delete
-</a>
-
-<a href="{% url 'animal-list' %}">
-    Back
-</a>
-
+<div class="card">
+  <h2>Historia zadań</h2>
+  <ul class="itemlist">
+    {% for task in animal.tasks.all %}
+      <li class="item">
+        <div class="item__main">
+          <a class="item__title" href="{% url 'task-detail' task.pk %}">{{ task.title }}</a>
+          <span class="item__meta">
+            {% if task.task_type %}{{ task.task_type }} · {% endif %}
+            {% if task.due_date %}termin: {{ task.due_date }}{% else %}bez terminu{% endif %}
+          </span>
+        </div>
+        <span class="pill pill--{{ task.status_code }}">{{ task.display_status }}</span>
+      </li>
+    {% empty %}
+      <li class="empty">Brak zadań powiązanych z tym zwierzęciem.</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}
