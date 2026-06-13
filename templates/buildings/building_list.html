@@ -1,21 +1,25 @@
 {% extends "base.html" %}
+{% block title %}Lokalizacje — Barney{% endblock %}
 
 {% block content %}
+<div class="page-head">
+  <h1>Lokalizacje</h1>
+  {% if user.is_admin or user.is_manager %}
+    <a href="{% url 'building-create' %}" class="btn btn--primary">+ Dodaj lokalizację</a>
+  {% endif %}
+</div>
 
-<h1>Buildings</h1>
-
-<a href="{% url 'building-create' %}">Add building</a>
-
-<ul>
-    {% for building in buildings %}
-        <li>
-            <a href="{% url 'building-detail' building.pk %}">
-                {{ building.name }}
-            </a>
-        </li>
-    {% empty %}
-        <li>No buildings found.</li>
-    {% endfor %}
+<ul class="itemlist">
+  {% for building in buildings %}
+    <li class="item">
+      <div class="item__main">
+        <a class="item__title" href="{% url 'building-detail' building.pk %}">{{ building.name }}</a>
+        <span class="item__meta">{{ building.get_type_display }} · zwierząt: {{ building.animals.count }}</span>
+      </div>
+      <a href="{% url 'building-detail' building.pk %}" class="btn btn--ghost btn--sm">Podgląd</a>
+    </li>
+  {% empty %}
+    <li class="empty">Brak lokalizacji.</li>
+  {% endfor %}
 </ul>
-
 {% endblock %}

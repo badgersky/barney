@@ -1,23 +1,20 @@
 {% extends "base.html" %}
+{% block title %}Zadanie — Barney{% endblock %}
 
 {% block content %}
+<div class="page-head"><h1>{% if form.instance.pk %}Edytuj zadanie{% else %}Nowe zadanie{% endif %}</h1></div>
 
-<h1>Task</h1>
-
-<form method="post">
-
+<div class="card card--accent">
+  <form method="post">
     {% csrf_token %}
-
+    {% if form.non_field_errors %}
+      <div class="alert alert--error">{{ form.non_field_errors }}</div>
+    {% endif %}
     {{ form.as_p }}
-
-    <button type="submit">
-        Save
-    </button>
-
-</form>
-
-<a href="{% url 'task-list' %}">
-    Cancel
-</a>
-
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary">Zapisz zadanie</button>
+      <a href="{% url 'task-list' %}" class="btn btn--ghost">Anuluj</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

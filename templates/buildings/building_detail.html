@@ -1,24 +1,64 @@
 {% extends "base.html" %}
+{% block title %}{{ building.name }} — Barney{% endblock %}
 
 {% block content %}
+<div class="page-head"><h1>{{ building.name }}</h1></div>
 
-<h1>{{ building.name }}</h1>
+<div class="card card--accent">
+  <dl class="dl">
+    <dt>Typ</dt><dd>{{ building.get_type_display }}</dd>
+    <dt>Utworzona przez</dt><dd>{{ building.created_by.username|default:"—" }}</dd>
+    <dt>Data utworzenia</dt><dd>{{ building.created_at|date:"d.m.Y H:i" }}</dd>
+  </dl>
+  <div class="form-actions">
+    {% if user.is_admin or user.is_manager %}
+      <a href="{% url 'building-update' building.pk %}" class="btn btn--ghost btn--sm">Edytuj</a>
+      <a href="{% url 'building-delete' building.pk %}" class="btn btn--danger btn--sm">Usuń</a>
+    {% endif %}
+    <a href="{% url 'building-list' %}" class="btn btn--ghost btn--sm">← Wróć do listy</a>
+  </div>
+</div>
 
-<p>{{ building.description }}</p>
+<div class="card">
+  <h2>Historia notatek</h2>
+  <ul class="itemlist">
+    {% for note in building.note_history.all %}
+      <li class="item">
+        <div class="item__main">
+          <span class="item__title" style="font-weight:500">{{ note.content|linebreaksbr }}</span>
+          <span class="item__meta">
+            {{ note.created_at|date:"d.m.Y H:i" }}{% if note.author %} · {{ note.author.username }}{% endif %}
+            {% if forloop.first %} · <strong>aktualna</strong>{% endif %}
+          </span>
+        </div>
+      </li>
+    {% empty %}
+      <li class="empty">Brak notatek. Dodaj pierwszą poniżej.</li>
+    {% endfor %}
+  </ul>
 
-<p>Created by: {{ building.created_by }}</p>
-<p>Created at: {{ building.created_at }}</p>
+  {% if user.is_admin or user.is_manager %}
+  <form method="post" action="{% url 'building-note-create' building.pk %}" style="margin-top:1rem">
+    {% csrf_token %}
+    {{ note_form.as_p }}
+    <button type="submit" class="btn btn--primary btn--sm">Dodaj notatkę</button>
+  </form>
+  {% endif %}
+</div>
 
-<a href="{% url 'building-update' building.pk %}">
-    Edit
-</a>
-
-<a href="{% url 'building-delete' building.pk %}">
-    Delete
-</a>
-
-<a href="{% url 'building-list' %}">
-    Back
-</a>
-
+{% if building.animals.all %}
+<div class="card">
+  <h2>Zwierzęta w tej lokalizacji</h2>
+  <ul class="itemlist">
+    {% for animal in building.animals.all %}
+      <li class="item">
+        <div class="item__main">
+          <a class="item__title" href="{% url 'animal-detail' animal.pk %}">{{ animal.name|default:animal.identifier }}</a>
+          <span class="item__meta">{{ animal.species }}</span>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
 {% endblock %}

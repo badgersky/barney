@@ -1,0 +1,249 @@
+/* Barney — system opieki nad zwierzętami
+   Identyfikacja: zieleń stodoły, barwa siana, ciepła neutralna b/ czytelność dla osób nietechnicznych. */
+
+:root {
+  --bg: #edf1ea;
+  --surface: #ffffff;
+  --ink: #1f2a22;
+  --muted: #5d6b5c;
+  --line: #d6ddd1;
+
+  --green: #2e6b4f;
+  --green-900: #1c4030;
+  --green-50: #e4efe8;
+  --amber: #d99a2b;
+  --amber-50: #f6ecd5;
+  --clay: #b5432c;
+  --clay-50: #f4ddd6;
+  --slate-50: #e7ebf1;
+  --slate: #4a5a72;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(28, 64, 48, .06), 0 6px 20px rgba(28, 64, 48, .07);
+  --ring: 0 0 0 3px rgba(46, 107, 79, .28);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--green-900);
+  margin: 0 0 .6rem;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.35rem; }
+
+a { color: var(--green); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+p { margin: .4rem 0; }
+
+/* ---------- Navbar ---------- */
+.nav {
+  background: var(--green-900);
+  color: #f3f7f1;
+  border-bottom: 3px solid var(--amber);
+}
+.nav__inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: .7rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.brand {
+  font-family: "Fraunces", serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+.brand:hover { text-decoration: none; }
+.brand__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: var(--amber);
+  color: var(--green-900);
+  font-size: 1rem;
+}
+.nav__links { display: flex; gap: .35rem; flex-wrap: wrap; align-items: center; }
+.nav__links a {
+  color: #dceadf;
+  padding: .35rem .65rem;
+  border-radius: var(--radius-sm);
+  font-size: .95rem;
+}
+.nav__links a:hover { background: rgba(255,255,255,.1); text-decoration: none; color: #fff; }
+.nav__spacer { flex: 1; }
+.nav__user { color: #bcd1c2; font-size: .85rem; }
+
+/* ---------- Layout ---------- */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.6rem 1.1rem 3rem;
+}
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.1rem;
+}
+.page-head h1 { margin: 0; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .5rem .9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 500;
+  font-size: .92rem;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, transform .05s ease;
+}
+.btn:hover { text-decoration: none; }
+.btn:active { transform: translateY(1px); }
+.btn--primary { background: var(--green); color: #fff; }
+.btn--primary:hover { background: var(--green-900); color: #fff; }
+.btn--ghost { background: var(--surface); color: var(--green-900); border-color: var(--line); }
+.btn--ghost:hover { border-color: var(--green); }
+.btn--danger { background: var(--clay); color: #fff; }
+.btn--danger:hover { background: #93351f; color: #fff; }
+.btn--sm { padding: .3rem .6rem; font-size: .82rem; }
+
+/* ---------- Cards & lists ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1rem;
+}
+.card--accent { border-top: 3px solid var(--green); }
+
+.stack { display: grid; gap: .8rem; }
+
+.itemlist { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.item {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--green);
+  border-radius: var(--radius-sm);
+  padding: .7rem .9rem;
+}
+.item__main { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.item__title { font-weight: 600; color: var(--ink); }
+.item__meta { color: var(--muted); font-size: .85rem; }
+.item__actions { display: flex; gap: .4rem; flex-shrink: 0; }
+
+.empty {
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ---------- Definition rows ---------- */
+.dl { display: grid; grid-template-columns: 180px 1fr; gap: .4rem 1rem; margin: .6rem 0 1rem; }
+.dl dt { color: var(--muted); font-size: .9rem; }
+.dl dd { margin: 0; color: var(--ink); }
+@media (max-width: 560px) { .dl { grid-template-columns: 1fr; gap: .1rem .5rem; } .dl dd { margin-bottom: .5rem; } }
+
+/* ---------- Pills / tags ---------- */
+.pill {
+  display: inline-block;
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.pill--planned  { background: var(--slate-50);  color: var(--slate); }
+.pill--upcoming { background: var(--amber-50);  color: #8a5a00; }
+.pill--overdue  { background: var(--clay-50);   color: var(--clay); }
+.pill--done     { background: var(--green-50);  color: var(--green-900); }
+.pill--cancelled{ background: #ececec;          color: #777; }
+.pill--type     { background: var(--green-50);  color: var(--green-900); }
+.pill--health   { background: var(--clay-50);   color: var(--clay); }
+
+/* ---------- Forms ---------- */
+form .helptext { color: var(--muted); font-size: .8rem; display: block; }
+form p { margin: 0 0 .9rem; }
+label { font-weight: 500; font-size: .92rem; color: var(--ink); display: block; margin-bottom: .25rem; }
+input[type=text], input[type=password], input[type=date], input[type=email],
+input[type=number], select, textarea {
+  width: 100%;
+  padding: .55rem .65rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  background: #fff;
+  color: var(--ink);
+}
+textarea { min-height: 90px; resize: vertical; }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: var(--ring);
+}
+.errorlist { color: var(--clay); list-style: none; padding: 0; margin: .2rem 0; font-size: .85rem; }
+.form-actions { display: flex; gap: .6rem; align-items: center; margin-top: .4rem; }
+
+.inline-form { display: flex; gap: .5rem; align-items: flex-end; flex-wrap: wrap; }
+.inline-form > p { margin: 0; }
+
+/* ---------- Messages / alerts ---------- */
+.alert {
+  border-radius: var(--radius-sm);
+  padding: .7rem .9rem;
+  margin-bottom: 1rem;
+  border: 1px solid;
+  font-size: .92rem;
+}
+.alert--error { background: var(--clay-50); border-color: #e3b6ab; color: #7c2c1a; }
+
+/* ---------- Auth card ---------- */
+.auth-wrap { max-width: 420px; margin: 3rem auto; }
+.auth-wrap .card { padding: 1.6rem; }
+.auth-wrap h2 { margin-top: 0; }
+.auth-foot { text-align: center; margin-top: 1rem; color: var(--muted); font-size: .9rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

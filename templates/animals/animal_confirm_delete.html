@@ -1,24 +1,16 @@
 {% extends "base.html" %}
+{% block title %}Usuń zwierzę — Barney{% endblock %}
 
 {% block content %}
-
-<h1>Delete animal</h1>
-
-<p>
-    Are you sure you want to delete
-    "{{ object.name }}"?
-</p>
-
-<form method="post">
+<div class="page-head"><h1>Usuń zwierzę</h1></div>
+<div class="card card--accent">
+  <p>Czy na pewno chcesz usunąć „<strong>{{ object.name|default:object.identifier }}</strong>"? Tej operacji nie można cofnąć.</p>
+  <form method="post">
     {% csrf_token %}
-
-    <button type="submit">
-        Delete
-    </button>
-</form>
-
-<a href="{% url 'animal-detail' object.pk %}">
-    Cancel
-</a>
-
+    <div class="form-actions">
+      <button type="submit" class="btn btn--danger">Tak, usuń</button>
+      <a href="{% url 'animal-detail' object.pk %}" class="btn btn--ghost">Anuluj</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

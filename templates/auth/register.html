@@ -1,31 +1,33 @@
 {% extends "base.html" %}
+{% block title %}Rejestracja — Barney{% endblock %}
 
 {% block content %}
+<div class="auth-wrap">
+  <div class="card card--accent">
+    <h2>Załóż konto</h2>
 
-<h2>Create account</h2>
-
-<form method="post">
-    {% csrf_token %}
-
-    <div>
-        <label>Username</label><br>
+    <form method="post">
+      {% csrf_token %}
+      <p>
+        <label for="{{ form.username.id_for_label }}">Nazwa użytkownika</label>
         {{ form.username }}
         {{ form.username.errors }}
-    </div>
-
-    <div>
-        <label>Password</label><br>
+      </p>
+      <p>
+        <label for="{{ form.password1.id_for_label }}">Hasło</label>
         {{ form.password1 }}
         {{ form.password1.errors }}
-    </div>
-
-    <div>
-        <label>Repeat password</label><br>
+      </p>
+      <p>
+        <label for="{{ form.password2.id_for_label }}">Powtórz hasło</label>
         {{ form.password2 }}
         {{ form.password2.errors }}
-    </div>
-
-    <button type="submit">Register</button>
-</form>
-
+      </p>
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Utwórz konto</button>
+      </div>
+    </form>
+  </div>
+  <p class="auth-foot">Masz już konto? <a href="{% url 'login' %}">Zaloguj się</a></p>
+</div>
 {% endblock %}

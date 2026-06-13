@@ -1,38 +1,30 @@
-<nav>
-
-    <a href="/">Home</a>
-
-    <a href="{% url 'building-list' %}">
-        Buildings
-    </a>
-
-    <a href="{% url 'animal-list' %}">
-        Animals
-    </a>
-
-    <a href="#">
-        Tasks
-    </a>
-
-    {% if user.is_authenticated %}
-
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">
-                Logout
-            </button>
-        </form>
-
-    {% else %}
-
-        <a href="{% url 'login' %}">
-            Login
+<nav class="nav">
+    <div class="nav__inner">
+        <a class="brand" href="/">
+            <span class="brand__mark" aria-hidden="true">🐐</span> Barney
         </a>
 
-        <a href="{% url 'register' %}">
-            Register
-        </a>
+        {% if user.is_authenticated %}
+        <div class="nav__links">
+            <a href="{% url 'task-list' %}">Zadania</a>
+            <a href="{% url 'animal-list' %}">Zwierzęta</a>
+            <a href="{% url 'building-list' %}">Lokalizacje</a>
+        </div>
+        {% endif %}
 
-    {% endif %}
+        <span class="nav__spacer"></span>
 
+        {% if user.is_authenticated %}
+            <span class="nav__user">{{ user.username }} · {{ user.get_role_display }}</span>
+            <form method="post" action="{% url 'logout' %}" style="margin:0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn--ghost btn--sm">Wyloguj</button>
+            </form>
+        {% else %}
+            <div class="nav__links">
+                <a href="{% url 'login' %}">Zaloguj</a>
+                <a href="{% url 'register' %}">Rejestracja</a>
+            </div>
+        {% endif %}
+    </div>
 </nav>

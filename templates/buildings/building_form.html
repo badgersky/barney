@@ -1,21 +1,16 @@
 {% extends "base.html" %}
+{% block title %}Lokalizacja — Barney{% endblock %}
 
 {% block content %}
-
-<h1>Building</h1>
-
-<form method="post">
+<div class="page-head"><h1>{% if form.instance.pk %}Edytuj lokalizację{% else %}Nowa lokalizacja{% endif %}</h1></div>
+<div class="card card--accent">
+  <form method="post">
     {% csrf_token %}
-
     {{ form.as_p }}
-
-    <button type="submit">
-        Save
-    </button>
-</form>
-
-<a href="{% url 'building-list' %}">
-    Cancel
-</a>
-
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary">Zapisz</button>
+      <a href="{% url 'building-list' %}" class="btn btn--ghost">Anuluj</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

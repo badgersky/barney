@@ -1,0 +1,2 @@
+# Zależności wyłącznie na potrzeby testów / CI
+coverage>=7,<8

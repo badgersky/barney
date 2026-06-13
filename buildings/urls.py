@@ -5,7 +5,8 @@ from .views import (
     BuildingDetailView,
     BuildingCreateView,
     BuildingUpdateView,
-    BuildingDeleteView
+    BuildingDeleteView,
+    BuildingNoteCreateView,
 )
 
 urlpatterns = [
@@ -14,4 +15,9 @@ urlpatterns = [
     path("create/", BuildingCreateView.as_view(), name="building-create"),
     path("<int:pk>/update/", BuildingUpdateView.as_view(), name="building-update"),
     path("<int:pk>/delete/", BuildingDeleteView.as_view(), name="building-delete"),
+    path(
+        "<int:building_pk>/notes/add/",
+        BuildingNoteCreateView.as_view(),
+        name="building-note-create",
+    ),
 ]
