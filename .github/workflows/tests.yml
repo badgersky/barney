@@ -1,0 +1,56 @@
+name: Testy
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:16
+        env:
+          POSTGRES_DB: barney
+          POSTGRES_USER: barney
+          POSTGRES_PASSWORD: barney
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U barney"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_NAME: barney
+      DB_USER: barney
+      DB_PASSWORD: barney
+      DB_HOST: localhost
+      DB_PORT: "5432"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalacja zależności
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Uruchomienie testów z pomiarem pokrycia
+        run: coverage run manage.py test --verbosity=2
+
+      - name: Raport pokrycia
+        run: |
+          coverage report
+          coverage xml
+
+      - name: Zapis raportu pokrycia
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
