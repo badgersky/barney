@@ -1,13 +1,3 @@
-# Barney - plan systemu
-
-> System webowy do zarządzania opieką nad zwierzętami w małych gospodarstwach, stajniach, zagrodach i prywatnych hodowlach.
->
-> Dokument przygotowano w ramach przedmiotu **„Projektowanie / Inżynieria Oprogramowania”**. Pokazuje pełny cykl życia aplikacji: od analizy potrzeb klienta, przez modelowanie (UML / C4 / BPMN), projekt architektury i dobór technologii, aż po działający prototyp z testami i prezentacją funkcjonalności.
->
-> **Uwaga metodologiczna.** Dokument oddziela to, co **zaimplementowane w kodzie** (apki Django `users`, `animals`, `buildings`, `tasks`, testy, Docker), od tego, co **zaplanowane w prezentacji projektowej** (dashboard, integracja z zewnętrznym systemem powiadomień, warstwa serwisów, nginx). Wszystkie rozbieżności między prezentacją a kodem są wskazane wprost w odpowiednich sekcjach.
-
----
-
 ## 1. Opis systemu
 
 **Barney** to aplikacja webowa wspierająca osoby zarządzające zwierzętami w małych gospodarstwach, stajniach, zagrodach, schroniskach i prywatnych hodowlach. System centralizuje w jednym miejscu informacje, które w takich miejscach najczęściej są rozproszone po notatkach, arkuszach kalkulacyjnych, wiadomościach i kalendarzach: ewidencję zwierząt, ich lokalizacje, stan zdrowia oraz zadania i przypomnienia związane z opieką.
@@ -124,25 +114,32 @@ Najważniejsze funkcje aplikacji:
 - przypomnienia powiązane z zadaniami,
 - historia notatek zwierząt i lokalizacji (z autorem i datą).
 
-Rozwinięcie:
+#### Logowanie i role użytkowników
+System umożliwia rejestrację, logowanie i wylogowanie użytkowników. Każde konto posiada przypisaną rolę (właściciel/administrator lub pracownik), która określa dostęp do funkcji systemu. Nowi użytkownicy otrzymują domyślnie rolę pracownika, a uprawnienia mogą być zmieniane przez administratora.
 
-**Logowanie i role** — *zaimplementowane.* Logowanie i wylogowanie obsługują wbudowane widoki Django (`LoginView`, `LogoutView`), rejestracja to własny widok `register`. Model `User` rozszerza `AbstractUser` o pole `role` (ADMIN / MANAGER = „Właściciel” / WORKER = „Pracownik”). Korzysta z tego każdy użytkownik. Rozwiązuje problem kontroli dostępu. Widoczne w kodzie (`users/`) i na zrzutach (ekran logowania, pasek nawigacji z rolą). *Uwaga:* rejestracja zawsze tworzy konto z rolą WORKER; zmiana roli odbywa się przez panel administracyjny Django.
+#### Ewidencja zwierząt  
+System pozwala prowadzić centralną bazę zwierząt znajdujących się w gospodarstwie. Uprawnieni użytkownicy mogą dodawać, edytować i usuwać wpisy, a pracownicy mają dostęp do przeglądania danych. Funkcja usprawnia organizację i porządkuje ewidencję.
 
-**Ewidencja zwierząt** — *zaimplementowane.* CRUD na modelu `Animal` w oparciu o klasowe widoki Django. Korzystają właściciel/administrator (tworzenie, edycja, usuwanie) oraz pracownik (przegląd). Rozwiązuje problem rozproszonej ewidencji. Widoczne w kodzie (`animals/`) i na zrzutach (lista i szczegóły zwierzęcia).
+#### Zarządzanie gatunkami  
+System umożliwia przypisywanie zwierząt do określonych gatunków, co pozwala uporządkować dane. Zarządzanie listą gatunków nie jest jednak dostępne bezpośrednio w aplikacji i odbywa się jedynie przez panel administracyjny.
 
-**Gatunki** — *zaimplementowane częściowo.* Encja `Species` istnieje (osobny model, relacja chroniona `PROTECT`), gatunki referencyjne są zasiane migracją. Zarządzanie gatunkami odbywa się jednak wyłącznie przez panel administracyjny Django — **brak dedykowanego UI** do dodawania gatunków w aplikacji właściwej. To zawężenie względem prezentacji (osobny „moduł gatunków”).
+#### Zarządzanie lokalizacjami  
+Aplikacja umożliwia zarządzanie miejscami przebywania zwierząt, takimi jak stajnie, boksy czy wybiegi. Możliwe jest dodawanie, edytowanie oraz przeglądanie lokalizacji wraz z przypisanymi do nich zwierzętami.
 
-**Lokalizacje** — *zaimplementowane.* CRUD na modelu `Building` (typy: stajnia, boks, zagroda, wybieg). Widok szczegółów pokazuje przypisane zwierzęta. Korzystają właściciel/administrator. Widoczne w kodzie (`buildings/`) i na zrzutach.
+#### Zarządzanie zadaniami  
+System pozwala tworzyć i przydzielać zadania związane z opieką nad zwierzętami lub zarządzaniem gospodarstwem. Zadania posiadają terminy realizacji i statusy, co ułatwia organizację codziennej pracy.
 
-**Zadania** — *zaimplementowane.* Model `Task` z typem (`TaskType`: HEALTH/MANAGEMENT), terminem, statusem, przypisaniem do pracownika oraz powiązaniem ze zwierzęciem **albo** lokalizacją (walidacja wymusza dokładnie jeden cel). Statusy „Nadchodzące”/„Zaległe” są **wyliczane** z terminu metodą `display_status()`. Korzystają wszyscy aktorzy (właściciel/administrator tworzą, pracownik wykonuje). Widoczne w kodzie (`tasks/`) i na zrzutach (lista z kolorowymi statusami, formularz, szczegóły).
+#### Przypomnienia  
+Do zadań można dodawać przypomnienia zawierające datę i treść informacji. Obecnie system jedynie zapisuje przypomnienia — automatyczne wysyłanie powiadomień nie zostało jeszcze wdrożone.
 
-**Przypomnienia** — *zaimplementowane częściowo.* Model `Reminder` (data, treść, status ACTIVE/SENT/CANCELLED) powiązany z zadaniem; dodawanie z poziomu szczegółów zadania. **Brak realnego wysyłania** powiadomień — status SENT nie jest przez nic ustawiany, nie ma integracji z zewnętrznym systemem. To „przygotowanie pod integrację”, nie działająca wysyłka.
+#### Historia notatek  
+System umożliwia zapisywanie historii notatek dotyczących zwierząt oraz lokalizacji. Wszystkie wpisy są archiwizowane, dzięki czemu można śledzić wcześniejsze informacje i aktualny stan obiektów.
 
-**Historia notatek** — *zaimplementowane (rozszerzenie ponad pierwotną specyfikację).* `AnimalNote` i `BuildingNote` przechowują wpisy z datą i autorem; widok szczegółów pokazuje całą historię, najnowszy wpis oznaczony jako „aktualna”.
+#### Dashboard  
+Projekt zakładał stworzenie panelu głównego prezentującego najważniejsze informacje po zalogowaniu. Funkcjonalność ta nie została jeszcze zaimplementowana.
 
-**Dashboard (FR-12 / UC-12)** — *tylko planowany.* W kodzie **nie istnieje** aplikacja, widok ani szablon dashboardu. Strona główna przekierowuje zalogowanego użytkownika na listę zadań.
-
-**Wysyłanie powiadomień przez zewnętrzny system (FR-13 / UC-13)** — *tylko planowane.* Brak adaptera powiadomień i integracji.
+#### Automatyczne powiadomienia  
+Docelowo system ma wspierać wysyłanie automatycznych powiadomień przez zewnętrzne usługi komunikacyjne. Funkcja nie została jeszcze wdrożona.
 
 ---
 
@@ -210,16 +207,16 @@ System powinien:
 
 ## 6. Wymagania niefunkcjonalne
 
-- **Bezpieczeństwo.** Dostęp do wszystkich widoków danych wymaga zalogowania (`LoginRequiredMixin`). Hasła przechowywane są bezpiecznie dzięki domyślnemu mechanizmowi haszowania Django (PBKDF2) i walidatorom haseł (`AUTH_PASSWORD_VALIDATORS`). Ochrona CSRF jest aktywna (middleware + tokeny w formularzach). *Uwaga produkcyjna:* w repozytorium `DEBUG=True` i jawny `SECRET_KEY` — to ustawienia prototypu, do zmiany przed wdrożeniem.
-- **Użyteczność.** Prosty, jednoznaczny interfejs dla osób nietechnicznych, minimalna liczba ekranów, czytelne statusy kolorystyczne.
-- **Język.** Pełny polski interfejs (`LANGUAGE_CODE = "pl"`, etykiety modeli i formularzy po polsku, `verbose_name`).
-- **Dostępność / responsywność.** Aplikacja działa w przeglądarce na komputerze i telefonie; `meta viewport` i CSS przygotowane responsywnie. (NFR-04; weryfikacja manualna.)
-- **Niezawodność / integralność danych.** Relacje skonfigurowane tak, by usunięcie lokalizacji nie kasowało zwierząt ani zadań (`SET_NULL`), a gatunek używany przez zwierzę był chroniony przed usunięciem (`PROTECT`). (NFR-05.)
-- **Wydajność.** Lista zwierząt i zadań ładuje się w akceptowalnym czasie dla małego gospodarstwa (kilkanaście rekordów). Brak ciężkich zapytań analitycznych.
-- **Skalowalność.** Architektura warstwowa i podział na aplikacje Django pozwala dokładać moduły (dashboard, powiadomienia) bez przebudowy całości.
-- **Utrzymywalność.** Podział na aplikacje tematyczne, klasowe widoki Django, walidacja w formularzach, logika prezentacji statusu w modelu.
-- **Testowalność.** Zestaw 45 testów (jednostkowe, modułowe, funkcjonalne), pokrycie ~97%, konfiguracja `coverage`, osobne ustawienia testowe na SQLite.
-- **Wdrożenie.** Konteneryzacja: `Dockerfile` + `docker-compose.yaml` (usługi `web` i `db`/PostgreSQL), konfiguracja przez `.env`, migracje bazy danych.
+- **Bezpieczeństwo.** System wymaga logowania do dostępu do danych użytkownika. Dane logowania są odpowiednio zabezpieczone, a mechanizmy ochrony chronią aplikację przed nieautoryzowanym dostępem.  
+- **Użyteczność.** Interfejs został zaprojektowany w prosty i intuicyjny sposób, tak aby z systemu mogły korzystać również osoby bez zaawansowanej wiedzy technicznej.  
+- **Język.** Cała aplikacja została przygotowana w języku polskim, co zwiększa wygodę użytkowania dla docelowych odbiorców systemu.  
+- **Dostępność i responsywność.** System działa w przeglądarce internetowej zarówno na komputerach, jak i urządzeniach mobilnych, dostosowując układ do wielkości ekranu.  
+- **Niezawodność.** Struktura systemu zapewnia zachowanie spójności danych oraz ogranicza ryzyko przypadkowej utraty ważnych informacji podczas zarządzania zasobami.  
+- **Wydajność.** Aplikacja działa płynnie przy codziennym użytkowaniu i pozwala na szybki dostęp do podstawowych danych gospodarstwa.  
+- **Skalowalność.** Projekt systemu umożliwia dalszy rozwój oraz dodawanie nowych funkcjonalności bez konieczności przebudowy całej aplikacji.  
+- **Utrzymywalność.** System został podzielony na niezależne moduły, co ułatwia rozwój, aktualizacje oraz dalsze utrzymanie projektu.  
+- **Testowalność.** Aplikacja została objęta testami sprawdzającymi poprawność działania kluczowych funkcji oraz stabilność systemu.  
+- **Wdrożenie.** System przygotowano w sposób umożliwiający łatwe uruchomienie na serwerze wraz z bazą danych i konfiguracją środowiska.
 
 ---
 
